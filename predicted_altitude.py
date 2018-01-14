@@ -1,66 +1,72 @@
+import pylab
 import math
-import numpy as np
-import matplotlib.pyplot as plt; plt.rcdefaults()
-import matplotlib.pyplot as plt
- 
 
+# Gravitational constant (m/s^2)
+GRAVITY = 9.8
 
-# mass of rocket in in kg
-rocket_mass_oz = 100
-rocket_mass_kg = rocket_mass_oz / (16 * 2.2)
+# Meter to foot conversion
+METER_CONV = 3.28084
 
-# Area of rocket
-rocket_diameter = 3 # in inches
-rocket_area = ((rocket_diameter / 24) * 0.3048)**2 * math.pi
+# Mass of rocket (kg)
+mass = 3.9
 
-# Air resistance
-k = 0.5 * 1.2 * 0.75 * rocket_area
+# Diameter of rocket (in)
+diameter = 3.0me
 
-# I327DM, I600R, J340M, J350W, J500G
-motor_impulses = [532.8932, 640.1420,652.7670,697.4,722.6640]
-motor_thrusts = [309.2822, 542.4930,298.0671,387.4444,498.3890]
-motor_mass = [0.628, 0.617, 0.5773, 0.650, 0.654]
+# Radius of rocket (m), Area of the rocket (m^2)
+radius = (diameter / 2) * 0.0254
+area = math.pi * radius**2
 
-# Find burn times for each motor
-burn_times = []
+# Air resistance: rho (kg/m^3), Cd (dimensionless)
+rho = 1.2
+cD = 0.75
+k = 0.5 * rho * cD * area
 
-for motor in range(len(motor_impulses)):
-    burn_times.append(motor_impulses[motor] / motor_thrusts[motor])
+# Motor selection and information
+motor = {
+    "I327DM" :  {"impulse" : 532.8932, "thrust" : 309.2822, "mass" : 0.628},
+    "I600R"  :  {"impulse" : 640.1420, "thrust" : 542.4930, "mass" : 0.617},
+    "J340M"  :  {"impulse" : 652.7670, "thrust" : 298.0671, "mass" : 0.577},
+    "J350W"  :  {"impulse" : 697.4000, "thrust" : 387.4444, "mass" : 0.650},
+    "J500G"  :  {"impulse" : 722.6640, "thrust" : 498.3890, "mass" : 0.654},
+}
 
-# Finding max velocity and altitudes
-max_velocities = []
-alt = []
-
-
-for motor in range(len(motor_thrusts)):
+# Find burn times, maximum velocities, and altitudes
+for key, value in motor.items():
     
-    M = (rocket_mass_kg + motor_mass[motor])
-    Mg = (rocket_mass_kg + motor_mass[motor]) * 9.8 
-    T = motor_thrusts[motor]
-    t = burn_times[motor]
-    
+    # Calculate the burn time
+    motor[key]["burntime"] = motor[key]["impulse"] / motor[key]["thrust"]
+
+    # Total mass including rocket and motor
+    M = mass + motor[key]["mass"]
+
+    # Gravitational force on rocket
+    Mg = M * GRAVITY
+
+    # Shorten variables for thrust and burn time
+    T = motor[key]["thrust"]
+    t = motor[key]["burntime"]
+
+    # Compute maximum velocity that rocket will achieve
     q = math.sqrt((T - Mg) / k)
-    x = (2*k*q) / M
-    
+    x = (2 * k * q) / M
     v = (q * (1 - math.e**(-x * t))) / (1 + math.e**(-x * t))
     
-    yb = (-M/(2*k)) * math.log((T - Mg - k*v**2) / (T - Mg)) * 3.3
-    yc = (M /(2*k)) * math.log( (Mg + k * v**2) / Mg) * 3.3
-    alt.append((yb+yc))
+    motor[key]["vel"] = v
 
-motors = ('I327DM', 'I600R', 'J340M', 'J350W', 'J500G')
-y = np.arange(len(motors))
+    # Calculate boost phase distance and coast phase distance
+    yb = (-M / (2 * k)) * math.log((T - Mg - k * v**2) / (T - Mg)) * METER_CONV
+    yc = (M / (2 * k)) * math.log((Mg + k * v**2) / Mg) * METER_CONV
 
-plt.bar(y, alt, align='center', alpha=0.5)
-plt.xticks(y, motors)
-plt.ylabel('Usage')
-plt.title('Predicted Altitude with 100 oz mass (Miranda Rocket + Payload)')
-plt.xlabel('Motors')
-plt.ylabel('Predicted Altitude')
-plt.show()
+    motor[key]["alt"] = yb + yc
 
-'''print("This simulation assumes a rocket with a ", rocket_diameter, " inch diameter and a total mass of ", rocket_mass_kg, " kg PLUS the mass of the motor.", '\n')
+# Print out results for predicted altitude with performance measures based on area and mass
+print("This simulation assumes a rocket with a ", diameter, " inch diameter and a total mass of ", mass, " kg PLUS the mass of the motor")
 
-for i, motor in enumerate(motors, 1):
+for key, value in motor.items():
     
-    print(motors[i-1], " shall reach ", alt[i-1], " feet in altitude.")'''
+    print(key, ":")
+
+    for otherKey, otherValue in value.items():
+
+        print("    ", otherKey, ":", otherValue)
