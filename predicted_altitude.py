@@ -11,7 +11,7 @@ METER_CONV = 3.28084
 mass = 3.9
 
 # Diameter of rocket (in)
-diameter = 3.0me
+diameter = 3.0
 
 # Radius of rocket (m), Area of the rocket (m^2)
 radius = (diameter / 2) * 0.0254
