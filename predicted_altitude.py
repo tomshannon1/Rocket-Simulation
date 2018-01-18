@@ -79,6 +79,7 @@ objects = ('I327DM', 'I600R', 'J340M', 'J340W', 'J500G')
 
 plt.bar(motors, motor_altitudes, align='center', alpha=1)
 plt.ylabel('Predicted Altitude (ft)')
-plt.title('Motors')
+plt.xlabel('Motors')
+plt.title('Predicted Altitude with ' + str(mass) + ' kg mass  (rocket and payload)')
  
 plt.show()
