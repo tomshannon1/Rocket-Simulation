@@ -1,5 +1,6 @@
 import pylab
 import math
+import matplotlib.pyplot as plt
 
 # Gravitational constant (m/s^2)
 GRAVITY = 9.8
@@ -8,10 +9,10 @@ GRAVITY = 9.8
 METER_CONV = 3.28084
 
 # Mass of rocket (kg)
-mass = 3.9
+mass = 3.00
 
 # Diameter of rocket (in)
-diameter = 3.0
+diameter = 3.1
 
 # Radius of rocket (m), Area of the rocket (m^2)
 radius = (diameter / 2) * 0.0254
@@ -60,6 +61,9 @@ for key, value in motor.items():
 
     motor[key]["alt"] = yb + yc
 
+motors = [key for key, value in motor.items()]
+motor_altitudes = [value["alt"] for key, value in motor.items()]
+
 # Print out results for predicted altitude with performance measures based on area and mass
 print("This simulation assumes a rocket with a ", diameter, " inch diameter and a total mass of ", mass, " kg PLUS the mass of the motor")
 
@@ -68,5 +72,13 @@ for key, value in motor.items():
     print(key, ":")
 
     for otherKey, otherValue in value.items():
-
+ 
         print("    ", otherKey, ":", otherValue)
+
+objects = ('I327DM', 'I600R', 'J340M', 'J340W', 'J500G')
+
+plt.bar(motors, motor_altitudes, align='center', alpha=1)
+plt.ylabel('Predicted Altitude (ft)')
+plt.title('Motors')
+ 
+plt.show()
