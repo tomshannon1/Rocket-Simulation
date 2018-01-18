@@ -61,6 +61,7 @@ for key, value in motor.items():
 
     motor[key]["alt"] = yb + yc
 
+# Lists with information for plotting
 motors = [key for key, value in motor.items()]
 motor_altitudes = [value["alt"] for key, value in motor.items()]
 
@@ -75,11 +76,9 @@ for key, value in motor.items():
  
         print("    ", otherKey, ":", otherValue)
 
-objects = ('I327DM', 'I600R', 'J340M', 'J340W', 'J500G')
-
+# Plot altitude results based on motor performance
 plt.bar(motors, motor_altitudes, align='center', alpha=1)
 plt.ylabel('Predicted Altitude (ft)')
 plt.xlabel('Motors')
 plt.title('Predicted Altitude with ' + str(mass) + ' kg mass  (rocket and payload)')
- 
 plt.show()
