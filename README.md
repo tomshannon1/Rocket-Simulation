@@ -14,4 +14,10 @@ motor = {
     "J340M"  :  {"impulse" : 652.7670, "thrust" : 298.0671, "mass" : 0.577},
     "J350W"  :  {"impulse" : 697.4000, "thrust" : 387.4444, "mass" : 0.650},
     "J500G"  :  {"impulse" : 722.6640, "thrust" : 498.3890, "mass" : 0.654},
-}```
+}
+```
+
+After you run this quick Python script, a graph chart is displayed to you like the one below. Information in the command line about altitude, thrust, burn time, and max velocity will also be provided. 
+
+![](images/graph.png)
+ 
